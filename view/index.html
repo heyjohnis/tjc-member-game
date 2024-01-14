@@ -243,6 +243,7 @@
       gameData.score -= gameData.hintPenalty;
       $score.innerHTML = gameData.score;
       $hint.innerHTML = `*${gameData.thisPicture.name.substring(1, 2)}*`;
+      setLevel();
     }
 
     function setLevel() {
@@ -256,6 +257,7 @@
       $input_name.value = gameData.thisPicture.name;
       gameData.score -= gameData.passPenalty;
       $score.innerHTML = gameData.score;
+      setLevel();
       setTimeout(() => {
         clearInputName();
         setQuizPictureData();
