@@ -4,7 +4,8 @@ export async function getDaebangPic(req, res) {
   const SELECT_DAE_BANG_PIC = `
   SELECT 
 		name
-		, photo 
+		, photo
+		, nickname
 	FROM 
 		kjmin_db.tjc_family_table 
 	WHERE

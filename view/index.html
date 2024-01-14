@@ -155,7 +155,10 @@
     function quizRequest(e) {
       const value = e.target.value;
       if (value.length >= 2) {
-        if (value === gameData.thisPicture.name) {
+        if (
+          value === gameData.thisPicture.name ||
+          value === gameData.thisPicture.nickname
+        ) {
           correctQuiz();
           setQuizPictureData();
           clearInputName();
