@@ -9,6 +9,40 @@
         margin: 0;
         padding: 0;
       }
+
+      .btn_start {
+        position: absolute;
+        top: 0;
+        display: block;
+        height: 100vh;
+        width: 100%;
+        font-size: 40px;
+        border-radius: 0;
+        border: 0;
+      }
+
+      .monitor {
+        margin: 10px 20px;
+      }
+      .monitor div {
+        display: inline-block;
+        width: 24%;
+        text-align: left;
+        font-size: 15px;
+      }
+
+      .time span {
+        width: 30px;
+        text-align: right;
+      }
+
+      .score {
+      }
+      .correct {
+      }
+      .level {
+      }
+
       .picture {
         width: 320px;
         height: 170px;
@@ -20,40 +54,6 @@
         width: 100%;
         height: 100%;
         object-fit: contain;
-      }
-      .time {
-        display: inline-block;
-        width: 150px;
-        margin: 15px;
-        text-align: center;
-        font-size: 15px;
-      }
-      .time span {
-        display: inline-block;
-        width: 80px;
-        font-size: 15px;
-      }
-      .score {
-        width: 100px;
-        margin: 0 auto;
-      }
-      .correct {
-        display: inline-block;
-        width: 100px;
-      }
-      .energy {
-        width: 100px;
-        margin: 0 auto;
-      }
-      .btn_start {
-        position: absolute;
-        top: 0;
-        display: block;
-        height: 100vh;
-        width: 100%;
-        font-size: 40px;
-        border-radius: 0;
-        border: 0;
       }
       .input_name {
         display: block;
@@ -105,10 +105,15 @@
       value="시작"
       onclick="stratQuiz()"
     />
-    <div class="time">시간: <span id="time">0</span></div>
-    <!-- <div class="score">점수: <span id="score">0</span></div> -->
-    <div class="correct">맞춘 갯수: <span id="correct">0</span></div>
-    <!-- <div class="energy">에너지: <span id="energy">100</span></div> -->
+    <div class="monitor">
+      <div class="time">
+        시간:
+        <span id="time">0</span>
+      </div>
+      <div class="correct">맞춘 갯수: <span id="correct">0</span></div>
+      <div class="score">점수: <span id="score">0</span></div>
+      <div class="level">Lv: <span id="level">1</span></div>
+    </div>
     <div id="picture" class="picture"></div>
 
     <input
@@ -133,11 +138,22 @@
     const gameData = {
       picture: [],
       score: 0,
-      energy: 100,
+      level: 1,
+      nextScore: 100,
       time: 0,
       correct: 0,
       thisPicture: null,
+      startTime: 0,
+      hintPenalty: 20,
+      passPenalty: 50,
     };
+    const $hint = document.getElementById("hint");
+    const $startButton = document.getElementById("btn_start");
+    const $score = document.getElementById("score");
+    const $time = document.getElementById("time");
+    const $energy = document.getElementById("energy");
+    const $picture = document.getElementById("picture");
+    const $level = document.getElementById("level");
 
     fetch("/member/daebang/pic")
       .then((res) => res.json())
@@ -148,10 +164,10 @@
 
     function stratQuiz() {
       setQuizPictureData();
-      const $button = document.getElementById("btn_start");
-      $button.style.display = "none";
+      $startButton.style.display = "none";
       setIntervalTimer();
     }
+
     function quizRequest(e) {
       const value = e.target.value;
       if (value.length >= 2) {
@@ -172,20 +188,21 @@
       const item = items[Math.floor(Math.random() * items.length)];
       console.log(item);
       gameData.thisPicture = item;
+      gameData.startTime = gameData.time;
       renderQuizPicture(item);
       clearHint();
     }
 
-    function renderInit() {
-      const $time = document.getElementById("time");
-      const $score = document.getElementById("score");
-      const $energy = document.getElementById("energy");
-      const $picture = document.getElementById("picture");
+    function setScore() {
+      const termTime = gameData.time - gameData.startTime;
+      const scoreTime = 10 - gameData.level - termTime;
+      gameData.score += scoreTime * 10;
+      $score.innerHTML = gameData.score;
+      setLevel();
     }
 
     function renderQuizPicture(item) {
-      const picture = document.getElementById("picture");
-      picture.innerHTML = `<img src="http://portal.tjc.or.kr/${item.photo}" />`;
+      $picture.innerHTML = `<img src="http://portal.tjc.or.kr/${item.photo}" />`;
     }
 
     function setIntervalTimer() {
@@ -200,6 +217,7 @@
       const $correct = document.getElementById("correct");
       gameData.correct++;
       $correct.innerHTML = gameData.correct;
+      setScore();
     }
 
     function clearInputName() {
@@ -212,7 +230,6 @@
     }
 
     function clearHint() {
-      const $hint = document.getElementById("hint");
       $hint.innerHTML = null;
       $hint.style.display = "none";
       const $btnHint = document.getElementById("btn_hint");
@@ -220,16 +237,25 @@
     }
 
     function handleHint() {
-      const $hint = document.getElementById("hint");
       $hint.style.display = "flex";
       const $btnHint = document.getElementById("btn_hint");
       $btnHint.style.display = "none";
+      gameData.score -= gameData.hintPenalty;
+      $score.innerHTML = gameData.score;
       $hint.innerHTML = `*${gameData.thisPicture.name.substring(1, 2)}*`;
+    }
+
+    function setLevel() {
+      const floor = Math.floor(gameData.score / gameData.nextScore);
+      const level = floor > 1 ? floor : 1;
+      $level.innerHTML = level;
     }
 
     function passQuiz() {
       const $input_name = document.getElementById("input_name");
       $input_name.value = gameData.thisPicture.name;
+      gameData.score -= gameData.passPenalty;
+      $score.innerHTML = gameData.score;
       setTimeout(() => {
         clearInputName();
         setQuizPictureData();
