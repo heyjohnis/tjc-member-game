@@ -52,6 +52,8 @@
         height: 100vh;
         width: 100%;
         font-size: 40px;
+        border-radius: 0;
+        border: 0;
       }
       .input_name {
         display: block;
@@ -87,10 +89,15 @@
         font-size: 40px;
         text-align: center;
       }
+      #hidden_input {
+        width: 0px;
+        height: 0px;
+        border: 0;
+      }
     </style>
   </head>
   <body>
-    <input type="hidden" id="hidden_input" />
+    <input type="text" id="hidden_input" />
     <input
       type="button"
       id="btn_start"
