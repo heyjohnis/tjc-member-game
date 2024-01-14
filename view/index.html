@@ -111,7 +111,7 @@
         <span id="time">0</span>
       </div>
       <div class="correct">맞춘 갯수: <span id="correct">0</span></div>
-      <div class="score">점수: <span id="score">0</span></div>
+      <div class="score">점수: <span id="score">100</span></div>
       <div class="level">Lv: <span id="level">1</span></div>
     </div>
     <div id="picture" class="picture"></div>
@@ -137,9 +137,9 @@
   <script>
     const gameData = {
       picture: [],
-      score: 0,
+      score: 100,
       level: 1,
-      nextScore: 100,
+      nextScore: 200,
       time: 0,
       correct: 0,
       thisPicture: null,
@@ -197,6 +197,7 @@
       const termTime = gameData.time - gameData.startTime;
       const scoreTime = 10 - gameData.level - termTime;
       gameData.score += scoreTime * 10;
+      gameData.score = gameData.score > 0 ? gameData.score : 0;
       $score.innerHTML = gameData.score;
       setLevel();
     }
@@ -240,8 +241,7 @@
       $hint.style.display = "flex";
       const $btnHint = document.getElementById("btn_hint");
       $btnHint.style.display = "none";
-      gameData.score -= gameData.hintPenalty;
-      $score.innerHTML = gameData.score;
+      setPenaltyScore(gameData.hintPenalty);
       $hint.innerHTML = `*${gameData.thisPicture.name.substring(1, 2)}*`;
       setLevel();
     }
@@ -252,11 +252,16 @@
       $level.innerHTML = level;
     }
 
+    function setPenaltyScore(score) {
+      const calcScore = (gameData.score -= score);
+      gameData.score = calcScore > 0 ? calcScore : 0;
+      $score.innerHTML = gameData.score;
+    }
+
     function passQuiz() {
       const $input_name = document.getElementById("input_name");
       $input_name.value = gameData.thisPicture.name;
-      gameData.score -= gameData.passPenalty;
-      $score.innerHTML = gameData.score;
+      setPenaltyScore(gameData.passPenalty);
       setLevel();
       setTimeout(() => {
         clearInputName();
