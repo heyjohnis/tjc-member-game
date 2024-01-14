@@ -90,6 +90,7 @@
     </style>
   </head>
   <body>
+    <input type="hidden" id="hidden_input" />
     <input
       type="button"
       id="btn_start"
@@ -192,11 +193,12 @@
     }
 
     function clearInputName() {
-      const $input_name = document.getElementById("input_name");
-      $input_name.value = null;
-      console.log("clearInputName", $input_name.value);
-      $input_name.blur();
-      $input_name.focus();
+      const $inputName = document.getElementById("input_name");
+      const $hiddenInput = document.getElementById("hidden_input");
+      $inputName.value = "";
+      console.log("clearInputName", $inputName.value);
+      $hiddenInput.focus();
+      $inputName.focus();
     }
 
     function clearHint() {
