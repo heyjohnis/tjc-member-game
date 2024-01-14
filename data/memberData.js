@@ -12,6 +12,7 @@ export async function getDaebangPic(req, res) {
 	  registchurch = 6
 		AND photo IS NOT NULL
 		AND photo != ''
+		AND status != 6
 	`;
   return db.execute(SELECT_DAE_BANG_PIC).then((res) => res[0]);
 }
