@@ -14,7 +14,7 @@ import memberRouter from "./router/memberRouter.js";
 
 const app = express();
 
-const pathDir = path.resolve("./resources/views");
+const pathDir = path.resolve("./view");
 app.use("/", express.static(pathDir));
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TJC Daebang Member Game</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      .picture {
+        width: 300px;
+        height: 300px;
+        margin: 0 auto;
+        border: 20px solid #000;
+        background-color: #000;
+      }
+      .picture img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      .time {
+        width: 150px;
+        margin: 30px auto !important;
+        text-align: center;
+        margin: 0 auto;
+        font-size: 30px;
+      }
+      .time span {
+        display: inline-block;
+        width: 80px;
+        font-size: 30px;
+      }
+      .score {
+        width: 100px;
+        margin: 0 auto;
+      }
+      .correct {
+        width: 100px;
+        margin: 20px auto;
+      }
+      .energy {
+        width: 100px;
+        margin: 0 auto;
+      }
+      .btn_start {
+        position: absolute;
+        top: 0;
+        display: block;
+        height: 100vh;
+        width: 100%;
+        font-size: 40px;
+      }
+      .input_name {
+        display: block;
+        margin: 10px auto;
+        width: 340px;
+        height: 100px;
+        font-size: 40px;
+        text-align: center;
+      }
+      .btn_hint {
+        display: block;
+        margin: 10px auto;
+        width: 340px;
+        height: 100px;
+        font-size: 40px;
+        text-align: center;
+      }
+      .hint {
+        display: none;
+        width: 340px;
+        height: 100px;
+        margin: 10px auto;
+        font-size: 40px;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+      }
+      .pass_quiz {
+        display: block;
+        margin: 10px auto;
+        width: 340px;
+        height: 100px;
+        font-size: 40px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <input
+      type="button"
+      id="btn_start"
+      class="btn_start"
+      value="시작"
+      onclick="stratQuiz()"
+    />
+    <div class="time">시간: <span id="time">0</span></div>
+    <!-- <div class="score">점수: <span id="score">0</span></div> -->
+    <div class="correct">맞춘 갯수: <span id="correct">0</span></div>
+    <!-- <div class="energy">에너지: <span id="energy">100</span></div> -->
+    <div id="picture" class="picture"></div>
+
+    <input
+      type="text"
+      id="input_name"
+      class="input_name"
+      onkeyup="quizRequest(event)"
+      style="ime-mode: active"
+    />
+    <input
+      type="button"
+      id="btn_hint"
+      class="btn_hint"
+      value="힌트"
+      onclick="handleHint()"
+    />
+    <div class="hint" id="hint"></div>
+
+    <input type="button" value="통과" class="pass_quiz" onclick="passQuiz()" />
+  </body>
+  <script>
+    const gameData = {
+      picture: [],
+      score: 0,
+      energy: 100,
+      time: 0,
+      correct: 0,
+      thisPicture: null,
+    };
+
+    fetch("/member/daebang/pic")
+      .then((res) => res.json())
+      .then((res) => {
+        gameData.picture = res;
+        console.log("res", res);
+      });
+
+    function stratQuiz() {
+      setQuizPictureData();
+      const $button = document.getElementById("btn_start");
+      $button.style.display = "none";
+      setIntervalTimer();
+    }
+    function quizRequest(e) {
+      const value = e.target.value;
+      if (value.length >= 2) {
+        if (value === gameData.thisPicture.name) {
+          correctQuiz();
+          setQuizPictureData();
+          clearInputName();
+          clearHint();
+        }
+      }
+    }
+
+    function setQuizPictureData() {
+      const items = gameData.picture;
+      const item = items[Math.floor(Math.random() * items.length)];
+      console.log(item);
+      gameData.thisPicture = item;
+      renderQuizPicture(item);
+      clearHint();
+    }
+
+    function renderInit() {
+      const $time = document.getElementById("time");
+      const $score = document.getElementById("score");
+      const $energy = document.getElementById("energy");
+      const $picture = document.getElementById("picture");
+    }
+
+    function renderQuizPicture(item) {
+      const picture = document.getElementById("picture");
+      picture.innerHTML = `<img src="http://portal.tjc.or.kr/${item.photo}" />`;
+    }
+
+    function setIntervalTimer() {
+      const $time = document.getElementById("time");
+      const timer = setInterval(() => {
+        gameData.time++;
+        $time.innerHTML = gameData.time;
+      }, 1000);
+    }
+
+    function correctQuiz() {
+      const $correct = document.getElementById("correct");
+      gameData.correct++;
+      $correct.innerHTML = gameData.correct;
+    }
+
+    function clearInputName() {
+      const $input_name = document.getElementById("input_name");
+      $input_name.value = null;
+      console.log("clearInputName", $input_name.value);
+      $input_name.blur();
+      $input_name.focus();
+    }
+
+    function clearHint() {
+      const $hint = document.getElementById("hint");
+      $hint.innerHTML = null;
+      $hint.style.display = "none";
+      const $btnHint = document.getElementById("btn_hint");
+      $btnHint.style.display = "block";
+    }
+
+    function handleHint() {
+      const $hint = document.getElementById("hint");
+      $hint.style.display = "flex";
+      const $btnHint = document.getElementById("btn_hint");
+      $btnHint.style.display = "none";
+      $hint.innerHTML = `*${gameData.thisPicture.name.substring(1, 2)}*`;
+    }
+
+    function passQuiz() {
+      const $input_name = document.getElementById("input_name");
+      $input_name.value = gameData.thisPicture.name;
+      setTimeout(() => {
+        clearInputName();
+        setQuizPictureData();
+        clearHint();
+      }, 5000);
+    }
+  </script>
+</html>
