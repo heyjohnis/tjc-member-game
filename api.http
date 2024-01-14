@@ -1,0 +1,11 @@
+#@baseUrl = http://localhost:8082
+@baseUrl = https://colov.kr:8082
+
+### 카카오 로그인
+POST {{baseUrl}}/auth/kakao HTTP/1.1
+Content-Type: application/json; charset=UTF-8
+
+### 네이버 로그인
+POST {{baseUrl}}/auth/naver HTTP/1.1
+Content-Type: application/json; charset=UTF-8
+
