@@ -139,13 +139,14 @@
       picture: [],
       score: 100,
       level: 1,
-      nextScore: 200,
+      nextScore: 300,
       time: 0,
       correct: 0,
       thisPicture: null,
       startTime: 0,
       hintPenalty: 20,
       passPenalty: 50,
+      minCnt: 40,
     };
     const $hint = document.getElementById("hint");
     const $startButton = document.getElementById("btn_start");
@@ -155,13 +156,16 @@
     const $picture = document.getElementById("picture");
     const $level = document.getElementById("level");
 
-    fetch("/member/daebang/pic")
-      .then((res) => res.json())
-      .then((res) => {
-        gameData.picture = res;
-        console.log("res", res);
-      });
+    getPictureData(gameData.minCnt);
 
+    function getPictureData(cnt) {
+      fetch(`/member/daebang/pic?cnt=${cnt}`)
+        .then((res) => res.json())
+        .then((res) => {
+          gameData.picture = res;
+          console.log("res", res);
+        });
+    }
     function stratQuiz() {
       setQuizPictureData();
       $startButton.style.display = "none";
@@ -249,6 +253,12 @@
     function setLevel() {
       const floor = Math.floor(gameData.score / gameData.nextScore);
       const level = floor > 1 ? floor : 1;
+      if (gameData.level !== level) {
+        gameData.level = level;
+        const cnt =
+          gameData.minCnt - level * 5 > 0 ? gameData.minCnt - level * 5 : 0;
+        getPictureData(cnt);
+      }
       $level.innerHTML = level;
     }
 
@@ -267,7 +277,7 @@
         clearInputName();
         setQuizPictureData();
         clearHint();
-      }, 5000);
+      }, 10000);
     }
   </script>
 </html>
