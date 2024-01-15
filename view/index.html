@@ -5,11 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TJC Daebang Member Game</title>
     <style>
+      @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
       * {
         margin: 0;
         padding: 0;
       }
-
+      body {
+        background-color: #000;
+        font-family: "Nanum Gothic", sans-serif;
+      }
       .btn_start {
         position: absolute;
         top: 0;
@@ -22,25 +26,39 @@
       }
 
       .monitor {
-        margin: 10px 20px;
+        display: flex;
+        width: 340px;
+        margin: 10px auto;
+        color: #777;
       }
       .monitor div {
-        display: inline-block;
-        width: 24%;
         text-align: left;
         font-size: 15px;
       }
-
+      .monitor span {
+        color: #ccc;
+      }
+      .time {
+        width: 25%;
+        text-align: left;
+      }
       .time span {
-        width: 30px;
         text-align: right;
+        color: #ccc;
       }
 
       .score {
+        width: 30%;
       }
       .correct {
+        width: 35%;
+      }
+      .correct span {
+        color: #ccc;
       }
       .level {
+        width: 10%;
+        text-align: right !important;
       }
 
       .picture {
@@ -62,6 +80,8 @@
         height: 70px;
         font-size: 40px;
         text-align: center;
+        border: 0;
+        background-color: #ccc;
       }
       .btn_hint {
         display: block;
@@ -70,6 +90,9 @@
         height: 70px;
         font-size: 40px;
         text-align: center;
+        background-color: #0a3c9f;
+        color: #3e6bc8;
+        border: 0;
       }
       .hint {
         display: none;
@@ -80,6 +103,7 @@
         text-align: center;
         align-items: center;
         justify-content: center;
+        color: #fff;
       }
       .pass_quiz {
         display: block;
@@ -88,6 +112,9 @@
         height: 70px;
         font-size: 40px;
         text-align: center;
+        background-color: #750d0d;
+        color: #c83e3e;
+        border: 0;
       }
       #hidden_input {
         width: 0px;
@@ -105,6 +132,14 @@
       value="시작"
       onclick="stratQuiz()"
     />
+    <div id="picture" class="picture"></div>
+    <input
+      type="text"
+      id="input_name"
+      class="input_name"
+      onkeyup="quizRequest(event)"
+      style="ime-mode: active"
+    />
     <div class="monitor">
       <div class="time">
         시간:
@@ -114,15 +149,6 @@
       <div class="score">점수: <span id="score">100</span></div>
       <div class="level">Lv: <span id="level">1</span></div>
     </div>
-    <div id="picture" class="picture"></div>
-
-    <input
-      type="text"
-      id="input_name"
-      class="input_name"
-      onkeyup="quizRequest(event)"
-      style="ime-mode: active"
-    />
     <input
       type="button"
       id="btn_hint"
@@ -139,7 +165,7 @@
       picture: [],
       score: 100,
       level: 1,
-      nextScore: 300,
+      nextScore: 200,
       time: 0,
       correct: 0,
       thisPicture: null,
@@ -246,7 +272,7 @@
       const $btnHint = document.getElementById("btn_hint");
       $btnHint.style.display = "none";
       setPenaltyScore(gameData.hintPenalty);
-      $hint.innerHTML = `*${gameData.thisPicture.name.substring(1, 2)}*`;
+      $hint.innerHTML = `○ ${gameData.thisPicture.name.substring(1, 2)} ○`;
       setLevel();
     }
 
