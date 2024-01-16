@@ -24,6 +24,9 @@
         font-size: 40px;
         border-radius: 0;
         border: 0;
+        background-color: #000;
+        color: #fff;
+        font-size: 100px;
       }
 
       .monitor {
@@ -40,7 +43,7 @@
         color: #ccc;
       }
       .time {
-        width: 25%;
+        width: 26%;
         text-align: left;
       }
       .time span {
@@ -52,13 +55,13 @@
         width: 30%;
       }
       .correct {
-        width: 35%;
+        width: 30%;
       }
       .correct span {
         color: #ccc;
       }
       .level {
-        width: 10%;
+        width: 14%;
         text-align: right !important;
       }
 
@@ -92,8 +95,9 @@
         font-size: 40px;
         text-align: center;
         background-color: #0a3c9f;
-        color: #3e6bc8;
+        color: #6f9eff;
         border: 0;
+        cursor: pointer;
       }
       .hint {
         display: none;
@@ -114,8 +118,9 @@
         font-size: 40px;
         text-align: center;
         background-color: #750d0d;
-        color: #c83e3e;
+        color: #ff5757;
         border: 0;
+        cursor: pointer;
       }
       #hidden_input {
         width: 0px;
@@ -255,7 +260,7 @@
       const scoreTime = 10 - gameData.level - termTime;
       gameData.score += scoreTime * 10;
       gameData.score = gameData.score > 0 ? gameData.score : 0;
-      $score.innerHTML = gameData.score;
+      $score.innerHTML = gameData.score.toLocaleString();
       scoreEffect(scoreTime * 10);
       setLevel();
     }
