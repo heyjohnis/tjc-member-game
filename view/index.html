@@ -13,6 +13,7 @@
       body {
         background-color: #000;
         font-family: "Nanum Gothic", sans-serif;
+        overflow: hidden;
       }
       .btn_start {
         position: absolute;
@@ -121,10 +122,35 @@
         height: 0px;
         border: 0;
       }
+
+      #result_effect {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 170px;
+        padding: 20px 0;
+        text-align: center;
+        z-index: 9999;
+        font-size: 50px;
+        opacity: 1;
+        font-weight: bold;
+        color: #ff8400;
+        transition: all 1s cubic-bezier(0, 0, 0, 0.97);
+      }
+
+      .score_effect {
+        opacity: 0;
+        transform: scale(3);
+      }
     </style>
   </head>
   <body>
     <input type="text" id="hidden_input" />
+    <div id="result_effect"></div>
     <input
       type="button"
       id="btn_start"
@@ -174,13 +200,14 @@
       passPenalty: 50,
       minCnt: 40,
     };
-    const $hint = document.getElementById("hint");
     const $startButton = document.getElementById("btn_start");
+    const $picture = document.getElementById("picture");
+    const $hint = document.getElementById("hint");
     const $score = document.getElementById("score");
     const $time = document.getElementById("time");
     const $energy = document.getElementById("energy");
-    const $picture = document.getElementById("picture");
     const $level = document.getElementById("level");
+    const $resultEffect = document.getElementById("result_effect");
 
     getPictureData(gameData.minCnt);
 
@@ -229,6 +256,7 @@
       gameData.score += scoreTime * 10;
       gameData.score = gameData.score > 0 ? gameData.score : 0;
       $score.innerHTML = gameData.score;
+      scoreEffect(scoreTime * 10);
       setLevel();
     }
 
@@ -240,7 +268,7 @@
       const $time = document.getElementById("time");
       const timer = setInterval(() => {
         gameData.time++;
-        $time.innerHTML = gameData.time;
+        $time.innerHTML = gameData.time.toLocaleString();
       }, 1000);
     }
 
@@ -249,6 +277,23 @@
       gameData.correct++;
       $correct.innerHTML = gameData.correct;
       setScore();
+    }
+
+    function scoreEffect(score) {
+      $resultEffect.style.opacity = 0;
+      if (score > 0) {
+        $resultEffect.style.color = "#5eed19";
+        $resultEffect.innerHTML = `+${score}`;
+      } else {
+        $resultEffect.style.color = "#ff0000";
+        $resultEffect.innerHTML = `${score}`;
+      }
+      $resultEffect.classList.add("score_effect");
+      setTimeout(() => {
+        $resultEffect.style.opacity = 1;
+        $resultEffect.classList.remove("score_effect");
+        $resultEffect.innerHTML = "";
+      }, 1000);
     }
 
     function clearInputName() {
@@ -289,9 +334,10 @@
     }
 
     function setPenaltyScore(score) {
+      scoreEffect(score * -1);
       const calcScore = (gameData.score -= score);
       gameData.score = calcScore > 0 ? calcScore : 0;
-      $score.innerHTML = gameData.score;
+      $score.innerHTML = gameData.score.toLocaleString();
     }
 
     function passQuiz() {
