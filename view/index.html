@@ -325,6 +325,7 @@
       setPenaltyScore(gameData.hintPenalty);
       $hint.innerHTML = `○ ${gameData.thisPicture.name.substring(1, 2)} ○`;
       setLevel();
+      $inputName.focus();
     }
 
     function setLevel() {
@@ -355,6 +356,7 @@
         clearInputName();
         setQuizPictureData();
         clearHint();
+        $inputName.focus();
       }, 10000);
     }
   </script>
