@@ -354,12 +354,12 @@
       setPenaltyScore(gameData.passPenalty);
       setLevel();
       $inputName.focus();
-      $inputName.readOnly = true;
+      $inputName.disabled = true;
       setTimeout(() => {
+        $inputName.disabled = false;
         clearInputName();
         setQuizPictureData();
         clearHint();
-        $inputName.readOnly = false;
         $inputName.focus();
       }, 8000);
     }
