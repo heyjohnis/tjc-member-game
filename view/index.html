@@ -213,6 +213,8 @@
     const $energy = document.getElementById("energy");
     const $level = document.getElementById("level");
     const $resultEffect = document.getElementById("result_effect");
+    const $inputName = document.getElementById("input_name");
+    const $hiddenInput = document.getElementById("hidden_input");
 
     getPictureData(gameData.minCnt);
 
@@ -303,8 +305,6 @@
     }
 
     function clearInputName() {
-      const $inputName = document.getElementById("input_name");
-      const $hiddenInput = document.getElementById("hidden_input");
       $inputName.value = "";
       console.log("clearInputName", $inputName.value);
       $hiddenInput.focus();
