@@ -257,7 +257,8 @@
 
     function setScore() {
       const termTime = gameData.time - gameData.startTime;
-      const scoreTime = 10 - gameData.level - termTime;
+      let scoreTime = 15 - gameData.level - termTime;
+      scoreTime = scoreTime > -2 ? scoreTime : -2;
       gameData.score += scoreTime * 10;
       gameData.score = gameData.score > 0 ? gameData.score : 0;
       $score.innerHTML = gameData.score.toLocaleString();
