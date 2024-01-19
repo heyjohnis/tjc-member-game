@@ -1,8 +1,4 @@
 import jwt from "jsonwebtoken";
-// import bcrypt from 'bcrypt';
-
-import axios from "axios";
-import {} from "express-async-errors";
 import { config } from "../config.js";
 
 export async function login(req, res) {

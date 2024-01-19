@@ -267,7 +267,7 @@
         .then(async (res) => {
           console.log("res", res);
           if (res.success) {
-            await getQuizPictureData();
+            await getQuizPictureData(gameData.minCnt);
             localStorage.setItem("token", res.token);
             localStorage.setItem("login_id", res.login_id);
             localStorage.setItem("password", $password.value);
@@ -406,7 +406,7 @@
         gameData.level = level;
         const cnt =
           gameData.minCnt - level * 5 > 0 ? gameData.minCnt - level * 5 : 0;
-        getPictureData(cnt);
+        getQuizPictureData(cnt);
       }
       $level.innerHTML = level;
     }
