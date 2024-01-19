@@ -6,10 +6,11 @@ export async function getDaebangPic(req, res) {
   SELECT 
   	g.* 
 	FROM (
-		SELECT 
-			f.name
+		SELECT
+			f.idx 
+			, f.name
 			, f.photo
-      , nickname
+      		, nickname
 			, COUNT(f.idx) AS cnt
 		FROM 
 			tjc_family_table f 

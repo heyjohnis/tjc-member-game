@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -26,7 +26,7 @@ export const config = {
     key: process.env.SOLAPI_KEY,
     secret: process.env.SOLAPI_SECRET,
   },
-  ssl : {
+  ssl: {
     path: process.env.SSL_PATH,
     key: process.env.SSL_KEY,
     cert: process.env.SSL_CERT,
@@ -42,16 +42,19 @@ export const config = {
     smtpPort: process.env.SMTP_PORT,
     smtpUser: process.env.SMTP_USER,
     smtpPassword: process.env.SMTP_PASSWORD,
-    smtpEmail: process.env.SMTP_EMAIL
+    smtpEmail: process.env.SMTP_EMAIL,
   },
   kakao: {
     apiKey: process.env.KAKAO_API_KEY,
     secretKey: process.env.KAKAO_CLIENT_SECRET,
-    rediretUri: process.env.KAKAO_REDIRECT_URI
+    rediretUri: process.env.KAKAO_REDIRECT_URI,
   },
   naver: {
     apiKey: process.env.NAVER_API_KEY,
     secretKey: process.env.NAVER_CLIENT_SECRET,
-    rediretUri: process.env.NAVER_REDIRECT_URI
-  }
-}
+    rediretUri: process.env.NAVER_REDIRECT_URI,
+  },
+  password: {
+    key: process.env.PASSWORD_KEY,
+  },
+};
