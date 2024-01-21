@@ -11,6 +11,7 @@ import path from "path";
 import authRouter from "./router/authRouter.js";
 import { config } from "./config.js";
 import memberRouter from "./router/memberRouter.js";
+import rankRouter from "./router/rankRouter.js";
 
 const app = express();
 
@@ -28,6 +29,7 @@ app.use(
 
 app.use("/auth", authRouter);
 app.use("/member", memberRouter);
+app.use("/rank", rankRouter);
 
 app.use((req, res, next) => {
   res.sendStatus(404);

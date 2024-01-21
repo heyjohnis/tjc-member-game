@@ -15,36 +15,72 @@
         font-family: "Nanum Gothic", sans-serif;
         overflow: hidden;
       }
-      .btn_start {
+      .start_box {
         position: absolute;
-        top: 0;
-        display: block;
-        height: 100vh;
+        z-index: 10000;
         width: 100%;
-        font-size: 40px;
-        border-radius: 0;
-        border: 0;
+        height: 100vh;
+        top: 0;
         background-color: #000;
-        color: #fff;
-        font-size: 100px;
       }
 
       .login_box {
         position: absolute;
         z-index: 10000;
-        width: 40%;
+        width: 100%;
         top: 10%;
-        left: 30%;
       }
 
       .login_box input {
-        margin: 20px 0;
-        width: 100%;
+        display: block;
+        margin: 20px auto;
+        width: 300px;
         height: 70px;
         font-size: 40px;
         text-align: center;
         border: 0;
         background-color: #ccc;
+      }
+
+      .btn_start {
+        font-size: 40px;
+        border: 0;
+        background-color: #fff !important;
+        color: #000 !important;
+        font-size: 100px;
+        font-weight: bold;
+      }
+
+      .rank_list {
+        position: absolute;
+        z-index: 10000;
+        width: 300px;
+        height: 400px;
+        bottom: 0;
+        color: #fff;
+        left: 50%;
+        border: 0;
+        transform: translateX(-150px);
+      }
+
+      .rank_list ol {
+        display: block;
+        list-style-type: decimal;
+      }
+
+      .rank_list ol li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px solid #555;
+      }
+      .rank_list ol li div {
+        width: 40%;
+        text-align: center;
+      }
+      .rank_list ol li div:last-child {
+        width: 20%;
       }
 
       .monitor {
@@ -128,7 +164,8 @@
         justify-content: center;
         color: #fff;
       }
-      .pass_quiz {
+      .pass_quiz,
+      .finish_quiz {
         display: block;
         margin: 10px auto;
         width: 340px;
@@ -139,6 +176,12 @@
         color: #ff5757;
         border: 0;
         cursor: pointer;
+      }
+
+      .finish_quiz {
+        margin-top: 30px;
+        background-color: #313131;
+        color: #9d9d9d;
       }
       #hidden_input {
         width: 0px;
@@ -173,24 +216,29 @@
   </head>
   <body>
     <input type="text" id="hidden_input" />
-    <div id="result_effect"></div>
-    <div class="login_box">
-      <input type="text" id="login_id" class="login_id" placeholder="ID" />
-      <input
-        type="password"
-        name="password"
-        id="password"
-        class="password"
-        placeholder="PASSWORD"
-      />
+    <div class="start_box">
+      <div class="login_box">
+        <input type="text" id="login_id" class="login_id" placeholder="ID" />
+        <input
+          type="password"
+          name="password"
+          id="password"
+          class="password"
+          placeholder="PASSWORD"
+        />
+        <input
+          type="button"
+          id="btn_start"
+          class="btn_start"
+          value="시작"
+          onclick="stratQuiz()"
+        />
+      </div>
+      <div class="rank_list">
+        <ol id="rank_list"></ol>
+      </div>
     </div>
-    <input
-      type="button"
-      id="btn_start"
-      class="btn_start"
-      value="시작"
-      onclick="stratQuiz()"
-    />
+    <div id="result_effect"></div>
     <div id="picture" class="picture"></div>
     <input
       type="text"
@@ -218,6 +266,12 @@
     <div class="hint" id="hint"></div>
 
     <input type="button" value="통과" class="pass_quiz" onclick="passQuiz()" />
+    <input
+      type="button"
+      value="종료"
+      class="finish_quiz"
+      onclick="gameFinish()"
+    />
   </body>
   <script>
     const gameData = {
@@ -233,7 +287,9 @@
       passPenalty: 50,
       minCnt: 40,
       passPicture: [],
+      isStudy: false,
     };
+    const $startBox = document.querySelector(".start_box");
     const $loginId = document.getElementById("login_id");
     const $password = document.getElementById("password");
     const $startButton = document.getElementById("btn_start");
@@ -246,11 +302,13 @@
     const $resultEffect = document.getElementById("result_effect");
     const $inputName = document.getElementById("input_name");
     const $hiddenInput = document.getElementById("hidden_input");
-
+    const $rankList = document.getElementById("rank_list");
     if (localStorage.getItem("login_id")) {
       $password.value = localStorage.getItem("password");
       $loginId.value = localStorage.getItem("login_id");
     }
+
+    quizRankData();
 
     async function stratQuiz() {
       await fetch(`/auth/login`, {
@@ -271,9 +329,8 @@
             localStorage.setItem("token", res.token);
             localStorage.setItem("login_id", res.login_id);
             localStorage.setItem("password", $password.value);
-            $password.style.display = "none";
-            $loginId.style.display = "none";
-            $startButton.style.display = "none";
+            $startBox.style.display = "none";
+
             setQuizPictureData();
             setIntervalTimer();
             $inputName.focus();
@@ -309,8 +366,8 @@
           value === gameData.thisPicture.name ||
           value === gameData.thisPicture.nickname
         ) {
-          correctQuiz();
           setQuizPictureData();
+          correctQuiz();
           clearInputName();
           clearHint();
         }
@@ -328,6 +385,8 @@
     }
 
     function setScore() {
+      if (gameData.isStudy) return;
+
       const termTime = gameData.time - gameData.startTime;
       let scoreTime = 15 - gameData.level - termTime;
       scoreTime = scoreTime > -2 ? scoreTime : -2;
@@ -351,6 +410,8 @@
     }
 
     function correctQuiz() {
+      if (gameData.isStudy) return;
+
       const $correct = document.getElementById("correct");
       gameData.correct++;
       $correct.innerHTML = gameData.correct;
@@ -400,6 +461,8 @@
     }
 
     function setLevel() {
+      if (gameData.isStudy) return;
+
       const floor = Math.floor(gameData.score / gameData.nextScore);
       const level = floor > 1 ? floor : 1;
       if (gameData.level !== level) {
@@ -441,6 +504,62 @@
       if (!hasPicture) {
         gameData.passPicture.push(gameData.thisPicture);
       }
+    }
+
+    async function quizRankData() {
+      await fetch(`/rank/list`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => res.json())
+        .then(async (res) => {
+          console.log("res", res);
+          renderRank(res);
+        });
+    }
+
+    function renderRank(data) {
+      let $html = "";
+      $html = data.map((item) => {
+        return `<li><div>${
+          item.user_id
+        }</div><div>${item.score.toLocaleString()}</div><div>Lv.${
+          item.level
+        }</div></li>`;
+      });
+      $rankList.innerHTML = $html;
+    }
+
+    function gameFinish() {
+      registScore();
+      alert("게임을 마치겠습니다.");
+      if (confirm("틀린 문제에 대해 학습하시겠습니까?")) {
+        gameData.picture = gameData.passPicture;
+        gameData.isStudy = true;
+      } else {
+        window.location.reload();
+      }
+    }
+
+    async function registScore() {
+      await fetch(`/rank/regist`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          login_id: $loginId.value,
+          level: gameData.level,
+          score: gameData.score,
+          time: gameData.time,
+          correct: gameData.correct,
+        }),
+      })
+        .then((res) => res.json())
+        .then(async (res) => {});
     }
   </script>
 </html>
