@@ -34,8 +34,10 @@ export async function getRank(req, res) {
 			, correct
 			, game_time
 		FROM
-			tjckr.tjc_member_game
-		ORDER BY score DESC
+			tjckr.tjc_member_game g
+		WHERE
+			g.score > 600
+		ORDER BY g.score DESC
   `;
   return db.execute(SELECT_RANK).then((res) => res[0]);
 }
