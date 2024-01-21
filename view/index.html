@@ -55,7 +55,7 @@
         position: absolute;
         z-index: 10000;
         width: 300px;
-        height: 400px;
+        height: 300px;
         bottom: 0;
         color: #fff;
         left: 50%;
@@ -226,6 +226,7 @@
           class="password"
           placeholder="PASSWORD"
         />
+        <input type="text" id="nickname" class="nickname" placeholder="별명" />
         <input
           type="button"
           id="btn_start"
@@ -292,6 +293,7 @@
     const $startBox = document.querySelector(".start_box");
     const $loginId = document.getElementById("login_id");
     const $password = document.getElementById("password");
+    const $nickname = document.getElementById("nickname");
     const $startButton = document.getElementById("btn_start");
     const $picture = document.getElementById("picture");
     const $hint = document.getElementById("hint");
@@ -306,6 +308,7 @@
     if (localStorage.getItem("login_id")) {
       $password.value = localStorage.getItem("password");
       $loginId.value = localStorage.getItem("login_id");
+      $nickname.value = localStorage.getItem("nickname");
     }
 
     quizRankData();
@@ -329,6 +332,7 @@
             localStorage.setItem("token", res.token);
             localStorage.setItem("login_id", res.login_id);
             localStorage.setItem("password", $password.value);
+            localStorage.setItem("nickname", $nickname.value);
             $startBox.style.display = "none";
 
             setQuizPictureData();
@@ -524,12 +528,12 @@
       let $html = "";
       $html = data.map((item) => {
         return `<li><div>${
-          item.user_id
+          item.nickname || item.user_id
         }</div><div>${item.score.toLocaleString()}</div><div>Lv.${
           item.level
         }</div></li>`;
       });
-      $rankList.innerHTML = $html;
+      $rankList.innerHTML = $html.join("");
     }
 
     function gameFinish() {
@@ -553,6 +557,7 @@
         body: JSON.stringify({
           login_id: $loginId.value,
           level: gameData.level,
+          nickname: $nickname.value,
           score: gameData.score,
           time: gameData.time,
           correct: gameData.correct,

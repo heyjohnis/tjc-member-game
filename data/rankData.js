@@ -1,10 +1,11 @@
 import { db } from "../db/database.js";
 
 export async function registRank(req, res) {
-  const { time, score, login_id, level, correct } = req.body;
+  const { time, score, login_id, nickname, level, correct } = req.body;
   const INSERT_RANK = `
 	INSERT INTO tjckr.tjc_member_game (
 		user_id
+		, nickname
 		, score
 		, level
 		, correct
@@ -15,26 +16,26 @@ export async function registRank(req, res) {
 	  , ?
 	  , ?
 	  , ?
+	  , ?
 	)
   `;
   return db
-    .execute(INSERT_RANK, [login_id, score, level, correct, time])
+    .execute(INSERT_RANK, [login_id, nickname, score, level, correct, time])
     .then((res) => res[0]);
 }
 
 export async function getRank(req, res) {
   const SELECT_RANK = `
-	SELECT a.* FROM (
 		SELECT 
 			user_id
-			, MAX(score) AS score
-			, MAX(level) AS level
+			, nickname
+			, score
+			, level
+			, correct
+			, game_time
 		FROM
 			tjckr.tjc_member_game
-		GROUP BY user_id
-	) a
-	ORDER BY score DESC
-	LIMIT 10
+		ORDER BY score DESC
   `;
   return db.execute(SELECT_RANK).then((res) => res[0]);
 }

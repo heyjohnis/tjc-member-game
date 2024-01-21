@@ -27,25 +27,3 @@ export async function getDaebangPic(req, res) {
 	`;
   return db.execute(SELECT_DAE_BANG_PIC, [cnt || 0]).then((res) => res[0]);
 }
-
-export async function registRank(req, res) {
-  const { time, score, login_id, level, correct } = req.body;
-  const INSERT_RANK = `
-	INSERT INTO tjckr.tjc_member_game (
-		login_id
-		, score
-		, level
-		, correct
-		, game_time
-	) VALUES (
-	  ?
-	  , ?
-	  , ?
-	  , ?
-	  , ?
-	)
-  `;
-  return db
-    .execute(INSERT_RANK, [score, login_id, level, correct, time])
-    .then((res) => res[0]);
-}
