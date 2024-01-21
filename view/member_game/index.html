@@ -480,6 +480,7 @@
     }
 
     function setPenaltyScore(score) {
+      if (gameData.isStudy) return;
       scoreEffect(score * -1);
       const calcScore = (gameData.score -= score);
       gameData.score = calcScore > 0 ? calcScore : 0;
@@ -537,13 +538,13 @@
       $rankList.innerHTML = $html.join("");
     }
 
-    function gameFinish() {
-      registScore();
+    async function gameFinish() {
       alert("게임을 마치겠습니다.");
       if (confirm("틀린 문제에 대해 학습하시겠습니까?")) {
         gameData.picture = gameData.passPicture;
         gameData.isStudy = true;
       } else {
+        await registScore();
         window.location.reload();
       }
     }
