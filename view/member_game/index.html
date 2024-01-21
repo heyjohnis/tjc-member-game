@@ -328,7 +328,7 @@
         .then((res) => res.json())
         .then(async (res) => {
           console.log("res", res);
-          if (res.success) {
+          if (res?.success === true) {
             await getQuizPictureData(gameData.minCnt);
             localStorage.setItem("token", res.token);
             localStorage.setItem("login_id", res.login_id);
@@ -359,7 +359,7 @@
           if (res?.length > 0) {
             gameData.picture = res;
           } else {
-            alert("비밀번호가 틀렸습니다.");
+            window.location.reload();
           }
         });
     }
