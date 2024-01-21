@@ -311,27 +311,27 @@
     quizRankData();
 
     async function stratQuiz() {
+      const req = {
+        login_id: $loginId.value,
+        password: $password.value,
+      };
+      console.log("req", req);
       await fetch(`/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          login_id: $loginId.value,
-          password: $password.value,
-        }),
+        body: JSON.stringify(req),
       })
         .then((res) => res.json())
         .then(async (res) => {
-          console.log("res", res);
           if (res?.success === true) {
-            await getQuizPictureData(gameData.minCnt);
             localStorage.setItem("token", res.token);
             localStorage.setItem("login_id", res.login_id);
             localStorage.setItem("password", $password.value);
             localStorage.setItem("nickname", $nickname.value);
+            await getQuizPictureData(gameData.minCnt);
             $startBox.style.display = "none";
-
             setQuizPictureData();
             setIntervalTimer();
             $inputName.focus();
@@ -535,10 +535,12 @@
     }
 
     async function gameFinish() {
-      alert("게임을 마치겠습니다.");
-      if (confirm("틀린 문제에 대해 학습하시겠습니까?")) {
+      if (
+        confirm("게임을 마치겠습니다. \n틀린 문제에 대해 학습하시겠습니까?")
+      ) {
         gameData.picture = gameData.passPicture;
         gameData.isStudy = true;
+        setQuizPictureData();
       } else {
         await registScore();
         window.location.reload();
