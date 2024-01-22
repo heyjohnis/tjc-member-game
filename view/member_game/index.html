@@ -420,7 +420,6 @@
         gameData.hintPenalty = 200;
         scoreTime = 20 - termTime;
       }
-      scoreTime = 40 - termTime;
       gameData.score += scoreTime;
       gameData.score = gameData.score > 0 ? gameData.score : 0;
       $score.innerHTML = gameData.score.toLocaleString();
