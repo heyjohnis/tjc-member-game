@@ -286,6 +286,7 @@
       minCnt: 40,
       passPicture: [],
       isStudy: false,
+      hart: 3,
     };
     const $startBox = document.querySelector(".start_box");
     const $loginId = document.getElementById("login_id");
@@ -399,14 +400,17 @@
         gameData.passPenalty = 100;
         gameData.hintPenalty = 50;
         scoreTime = 60 - termTime;
+        scoreTime = scoreTime > -40 ? scoreTime : -40;
       } else if (gameData.level < 25) {
         gameData.passPenalty = 200;
         gameData.hintPenalty = 100;
         scoreTime = 50 - termTime;
+        scoreTime = scoreTime > -50 ? scoreTime : -50;
       } else if (gameData.level < 30) {
         gameData.passPenalty = 300;
         gameData.hintPenalty = 200;
         scoreTime = 40 - termTime;
+        scoreTime = scoreTime > -60 ? scoreTime : -60;
       } else if (gameData.level < 30) {
         gameData.passPenalty = 300;
         gameData.hintPenalty = 200;
