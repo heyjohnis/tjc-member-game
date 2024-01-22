@@ -389,26 +389,34 @@
       if (gameData.isStudy) return;
 
       const termTime = gameData.time - gameData.startTime;
-      console.log("termTime", termTime, gameData.time, gameData.startTime);
       let scoreTime = 0;
       if (gameData.level < 13) {
-        scoreTime = 150 - gameData.level - termTime;
+        scoreTime = 160 - gameData.level - termTime;
         gameData.passPenalty = 50;
         gameData.hintPenalty = 20;
         scoreTime = scoreTime > -20 ? scoreTime : -20;
       } else if (gameData.level < 20) {
         gameData.passPenalty = 100;
         gameData.hintPenalty = 50;
-        scoreTime = 50 - termTime;
-      } else if (gameData.level < 30) {
+        scoreTime = 60 - termTime;
+      } else if (gameData.level < 25) {
         gameData.passPenalty = 200;
         gameData.hintPenalty = 100;
+        scoreTime = 50 - termTime;
+      } else if (gameData.level < 30) {
+        gameData.passPenalty = 300;
+        gameData.hintPenalty = 200;
+        scoreTime = 40 - termTime;
+      } else if (gameData.level < 30) {
+        gameData.passPenalty = 300;
+        gameData.hintPenalty = 200;
         scoreTime = 30 - termTime;
       } else {
-        gameData.passPenalty = 500;
+        gameData.passPenalty = 300;
         gameData.hintPenalty = 200;
         scoreTime = 20 - termTime;
       }
+      scoreTime = 40 - termTime;
       gameData.score += scoreTime;
       gameData.score = gameData.score > 0 ? gameData.score : 0;
       $score.innerHTML = gameData.score.toLocaleString();
